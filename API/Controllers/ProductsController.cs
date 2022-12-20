@@ -9,11 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    //api attribute controller
-    [ApiController]
-    //route
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+   
+    public class ProductsController : BaseApiController
     {
         //dependcy injection
         private readonly StoreContext _context;
@@ -34,7 +31,13 @@ namespace API.Controllers
         //single product without list
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            return await _context.Products.FindAsync(id);
+            //caching the value 
+            var product = await _context.Products.FindAsync(id);
+            // ! if null
+            if(product == null) return NotFound();
+
+            return product;
+
         }
     }
 }
