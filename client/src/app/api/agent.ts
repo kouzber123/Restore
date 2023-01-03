@@ -8,14 +8,15 @@ const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
 //this will be used as url for axios as basis
 axios.defaults.baseURL = "http://localhost:5000/api/";
-
+axios.defaults.withCredentials = true;
 //arrow func = concise
 const responseBody = (response: AxiosResponse) => response.data;
 
 //axios intercepter
-axios.interceptors.response.use(async response => {
-  await sleep();  
-  return response;
+axios.interceptors.response.use(
+  async response => {
+    await sleep();
+    return response;
   },
   (error: AxiosError) => {
     //over write ts with ! because we know there is response at this point
@@ -74,10 +75,17 @@ const TestErrors = {
   getValidationError: () => requests.get("buggy/validation-error")
 };
 
+const Basket = {
+  get: () => requests.get("basket"),
+  addItem: (productId: number, quantity = 1) => requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
+  removeItem: (productId: number, quantity = 1) => requests.delete(`basket?productId=${productId}&quantity=${quantity}`)
+};
+
 //then we can create an agent so we have simple access to the http requests
 const agent = {
   Catalog,
-  TestErrors
+  TestErrors,
+  Basket
 };
 
 export default agent;

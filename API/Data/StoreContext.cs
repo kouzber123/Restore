@@ -16,5 +16,6 @@ namespace API.Data
 
     //! prop DbSet<Product entity from entities folder> name : Products
     public DbSet<Product> Products { get; set; }
+    public DbSet<Basket> Baskets { get; set; }
   }
 }
