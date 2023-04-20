@@ -4,25 +4,16 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 import Container from "@mui/system/Container";
 import { useState, useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import AboutPage from "../../features/about/AboutPage";
-import Catalog from "../../features/catalog/Catalog";
-import ProductDetails from "../../features/catalog/ProductDetails";
-import ContactPage from "../../features/contact/ContactPage";
-import HomePage from "../../features/home/HomePage";
 
 import Header from "./Header";
 
 import "react-toastify/dist/ReactToastify.css";
-import ServerError from "../errors/ServerError";
-import NotFound from "../errors/NotFound";
-import BasketPage from "../../features/basket/BasketPage";
 import { useStoreContext } from "../context/StoreContext";
 import { getCookie } from "../util/util";
 import agent from "../api/agent";
 import LoadingComponent from "./LoadingComponents";
-import CheckoutPage from '../../features/checkout/CheckoutPage';
+import { Outlet } from "react-router-dom";
 
 function App() {
   const { setBasket } = useStoreContext();
@@ -63,18 +54,8 @@ function App() {
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       <CssBaseline />
       <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
-      <Container>
-        <Switch>
-          <Route exact path={"/"} component={HomePage} />
-          <Route exact path={"/catalog"} component={Catalog} />
-          <Route path={"/catalog/:id"} component={ProductDetails} />
-          <Route path={"/about"} component={AboutPage} />
-          <Route path={"/contact"} component={ContactPage} />
-          <Route path={"/server-error"} component={ServerError} />
-          <Route path={"/basket"} component={BasketPage} />
-          <Route path={"/checkout"} component={CheckoutPage} />
-          <Route component={NotFound} />
-        </Switch>
+      <Container sx={{ mt: 4 }}>
+        <Outlet />
       </Container>
     </ThemeProvider>
   );

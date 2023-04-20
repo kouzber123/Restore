@@ -6,7 +6,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/system";
 import { Link, NavLink } from "react-router-dom";
-import { Basket } from '../models/basket';
 import { useStoreContext } from '../context/StoreContext';
 
 
@@ -43,7 +42,7 @@ export default function Header({ darkMode, handleThemeChange }: Props) {
     <AppBar position="static" sx={{ mb: 4 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Box display="flex" alignItems="center">
-          <Typography variant="h6" component={NavLink} to="/" exact sx={navStyles}>
+          <Typography variant="h6" component={NavLink} to="/"  sx={navStyles}>
             RE-STORE
           </Typography>
           <Switch color="default" checked={darkMode} onChange={handleThemeChange} />

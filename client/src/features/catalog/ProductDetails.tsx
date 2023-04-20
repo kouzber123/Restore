@@ -10,7 +10,7 @@ import { LoadingButton } from "@mui/lab";
 
 export default function ProductDetails() {
   const { basket, setBasket, removeItem } = useStoreContext();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: any}>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(0);

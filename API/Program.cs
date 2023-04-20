@@ -1,48 +1,59 @@
-using System;
 using API.Data;
-using Microsoft.AspNetCore.Hosting;
+using API.Middleware;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
-namespace API
+var builder = WebApplication.CreateBuilder(args);
+
+//add services
+
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen(c =>
 {
-  public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
-            //! using > automatically disposes it if not needed anymore
-            using var scope = host.Services.CreateScope();
-            //! CONTEXT = access to the database
-            var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
-            //! LOGGER = logs problems if any within the scope in this case migration
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            try
-            {
-                //! try applying pending migrations to the database
-                context.Database.Migrate();
+  c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
+});
 
-                //pass context as argument, has access to database context to add the products
-                //? context meets the data 
-                DbInitializer.Initilize(context); 
-            }
-            catch(Exception ex) {
-                logger.LogError(ex, "Problem migrating Data");
-            }
+//! to get storeContext, EntityFramework working we need to add it ass service
+builder.Services.AddDbContext<StoreContext>(opt =>
+{
+  opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+});//configuration.getconnectionstring is from appsettings.development
 
-            host.Run();
+//allow cors policy for our front end
+builder.Services.AddCors();
+var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
+if (builder.Environment.IsDevelopment())
+{
 
-            
-         
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+  app.UseSwagger();
+  app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
 }
+app.UseCors(opt =>
+{
+  opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
+});
+app.UseRouting();
+
+//last point of middleware
+app.UseAuthorization();
+app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+
+var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
+
+var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+try
+{
+  context.Database.Migrate();
+  DbInitializer.Initilize(context);
+}
+catch (Exception ex)
+{
+  logger.LogError(ex, "Problem migrating Data");
+}
+
+app.Run();
+
+

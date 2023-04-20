@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { history } from "../..";
+import { router } from "../router/Routes";
 
 //delay effect
 
@@ -39,10 +39,7 @@ axios.interceptors.response.use(
         break;
 
       case 500:
-        history.push({
-          pathname: "/server-error",
-          state: { error: data }
-        });
+        router.navigate("/server-error", { state: { error: data } });
         break;
 
       default:
@@ -89,7 +86,7 @@ const agent = {
 };
 
 export default agent;
-/* 
+/*
 get = send url to get data
 post = send data to the db, "! we need URL and body content"
 
