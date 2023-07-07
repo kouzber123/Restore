@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-     //api attribute controller
+    //api attribute controller
     [ApiController]
     //route
     [Route("api/[controller]")]
- 
+
     public class BaseApiController:ControllerBase
     {
-        
+
     }
 }
