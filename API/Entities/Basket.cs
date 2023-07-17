@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace API.Entities
 {
     public class Basket  //! basket contains list of basketItems + add / remove functions
@@ -31,9 +25,9 @@ namespace API.Entities
         {
             var item = Items.FirstOrDefault(item => item.ProductId == productId);
             if(item == null) return;
-            
+
             item.Quantity -= quantity;
-           
+
             if(item.Quantity == 0) Items.Remove(item);
         }
     }

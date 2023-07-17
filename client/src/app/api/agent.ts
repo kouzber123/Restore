@@ -1,7 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
-import { PaginatedResponse, MetaData } from '../models/pagination';
+import { PaginatedResponse } from "../models/pagination";
+import { store } from "../store/configureStore";
+
 
 //delay effect
 
@@ -13,6 +15,11 @@ axios.defaults.withCredentials = true;
 //arrow func = concise
 const responseBody = (response: AxiosResponse) => response.data;
 
+axios.interceptors.request.use(config => {
+  const token = store.getState().account.user?.token
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 //axios intercepter
 axios.interceptors.response.use(
   async response => {
@@ -86,11 +93,18 @@ const Basket = {
     requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
 };
 
+const Account = {
+  login: (values: any) => requests.post("account/login", values),
+  register: (values: any) => requests.post("account/register", values),
+  currentUser: () => requests.get("account/currentUser"),
+};
+
 //then we can create an agent so we have simple access to the http requests
 const agent = {
   Catalog,
   TestErrors,
   Basket,
+  Account,
 };
 
 export default agent;
