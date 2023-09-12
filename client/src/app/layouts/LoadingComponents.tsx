@@ -3,6 +3,8 @@ import { Backdrop, Box, CircularProgress, Typography } from "@mui/material";
 interface Props {
   message?: string;
 }
+
+//default message if  message is empty
 export default function LoadingComponent({ message = "Loading..." }: Props) {
   return (
     <Backdrop open={true} invisible={true}>

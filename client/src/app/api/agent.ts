@@ -4,7 +4,6 @@ import { router } from "../router/Routes";
 import { PaginatedResponse } from "../models/pagination";
 import { store } from "../store/configureStore";
 
-
 //delay effect
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
@@ -16,7 +15,7 @@ axios.defaults.withCredentials = true;
 const responseBody = (response: AxiosResponse) => response.data;
 
 axios.interceptors.request.use(config => {
-  const token = store.getState().account.user?.token
+  const token = store.getState().account.user?.token;
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -97,14 +96,21 @@ const Account = {
   login: (values: any) => requests.post("account/login", values),
   register: (values: any) => requests.post("account/register", values),
   currentUser: () => requests.get("account/currentUser"),
+  fetchAddress: () => requests.get("account/savedAddress"),
 };
 
+const Orders = {
+  list: () => requests.get("orders"),
+  fetch: (id: number) => requests.get(`/orders/${id}`),
+  create: (values: any) => requests.post(`orders`, values),
+};
 //then we can create an agent so we have simple access to the http requests
 const agent = {
   Catalog,
   TestErrors,
   Basket,
   Account,
+  Orders,
 };
 
 export default agent;

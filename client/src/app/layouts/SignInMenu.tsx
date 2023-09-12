@@ -2,7 +2,8 @@ import { Button, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../store/configureStore";
 import { signOut } from "../../features/account/accountSlice";
-import { basketSlice, clearBasket } from '../../features/basket/basketSlice';
+import { basketSlice, clearBasket } from "../../features/basket/basketSlice";
+import { Link } from "react-router-dom";
 
 export default function SignInMenu() {
   const dispatch = useAppDispatch();
@@ -18,22 +19,33 @@ export default function SignInMenu() {
 
   return (
     <>
-      <Button color="inherit" sx={{typography: "h6"}} onClick={handleClick}>{user?.email}</Button>
+      <Button
+        color="inherit"
+        sx={{ typography: "h6" }}
+        onClick={handleClick}
+      >
+        {user?.email}
+      </Button>
       <Menu
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My Orders</MenuItem>
-        <MenuItem onClick={() => {
-          dispatch(signOut());
-          dispatch(clearBasket())
-
-        }
-
-        }
-        >Logout</MenuItem>
+        <MenuItem
+          component={Link}
+          to="/orders"
+        >
+          My Orders
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            dispatch(signOut());
+            dispatch(clearBasket());
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </>
   );
