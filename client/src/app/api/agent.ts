@@ -104,6 +104,10 @@ const Orders = {
   fetch: (id: number) => requests.get(`/orders/${id}`),
   create: (values: any) => requests.post(`orders`, values),
 };
+
+const Payments = {
+  createPaymentIntent: () => requests.post("payments", {}),
+};
 //then we can create an agent so we have simple access to the http requests
 const agent = {
   Catalog,
@@ -111,6 +115,7 @@ const agent = {
   Basket,
   Account,
   Orders,
+  Payments,
 };
 
 export default agent;
